@@ -12,7 +12,7 @@ services:
     networks:
       - internal
   
-  drupal:
+  www:
     image: farmos/farmos
     container_name: drupal
     depends_on:
@@ -29,7 +29,7 @@ services:
     image: nginx:1.17.4-alpine
     container_name: webserver
     depends_on:
-      - drupal
+      - www
     restart: unless-stopped
     ports:
       - 80:80
