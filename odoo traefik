@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:15
+    container_name: odoo-db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  odoo:
+    image: odoo:18.0
+    container_name: odoo
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file: .env
+    environment:
+      HOST: db
+      PORT: 5432
+      USER: ${POSTGRES_USER}
+      PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.odoo.rule=Host(`your_domain`)"
+      - "traefik.http.services.odoo.loadbalancer.server.port=8069"
+      - "traefik.http.middlewares.odoo-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.odoo.entrypoints=http"
+      - "traefik.http.routers.odoo-https.entrypoints=https"
+      - "traefik.http.routers.odoo-https.rule=Host(`your_domain`)"
+      - "traefik.http.routers.odoo-https.tls.certresolver=myresolver"
+      - "traefik.http.routers.odoo-https.service=odoo"
+    networks:
+      - internal
+      - external
+
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true" # Remove or secure this in production
+      - "--providers.docker=true"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=sammy@your_domain"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "traefik-certificates:/letsencrypt"
+    networks:
+      - external
+
+networks:
+  internal:
+    driver: bridge
+  external:
+    driver: bridge
+
+volumes:
+  odoo-data:
+  odoo-db-data:
+  traefik-certificates:
