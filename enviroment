@@ -1,0 +1,27 @@
+#############################
+# POSTGRES / ODOO SETTINGS
+#############################
+POSTGRES_USER=odoo
+POSTGRES_PASSWORD=SomeSecurePassword
+POSTGRES_DB=odoo
+
+# Optional: Odoo might need a master password if you want to skip default "admin"
+ODOO_MASTER_PASSWD=AnotherSecureMasterPass
+
+#############################
+# TRAEFIK/LET'S ENCRYPT
+#############################
+LETS_ENCRYPT_CONTACT_EMAIL=admin@example.com
+
+# The domain for accessing the Traefik dashboard (if exposed)
+TRAEFIK_HOSTNAME=traefik.example.com
+
+# The domain/subdomain you want for Odoo
+ODOO_HOSTNAME=odoo.example.com
+
+#############################
+# HOST PATHS FOR ODOO DATA
+#############################
+# Where on your host you want to store persistent data, logs, addons, etc.
+# This path must exist on your Docker host.
+BASE_VOLUME_DIR=/absolute/path/to/odoo_files
