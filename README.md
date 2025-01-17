@@ -1,5 +1,7 @@
 # farmos odoo
 Personal settings installing farmos
-I am using odoo traefik firts
+I am using odoo traefik 
 .env must be created and populated
-you must create persistent directories before deploying
+odoo.conf can aslo be created before
+
+
