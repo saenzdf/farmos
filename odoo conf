@@ -1,0 +1,61 @@
+[options]
+#---------------------------------------------
+# General Settings
+#---------------------------------------------
+admin_passwd = <your_secure_admin_password>
+data_dir = /var/lib/odoo
+addons_path = /mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+
+#---------------------------------------------
+# Database Configuration
+#---------------------------------------------
+db_host = db
+db_port = 5432
+db_user = odoo
+db_password = <your_database_password>
+db_name = odoo
+dbfilter = .*
+
+#---------------------------------------------
+# Logging Configuration
+#---------------------------------------------
+logfile = /var/log/odoo/odoo.log
+logrotate = True
+log_level = info
+log_handler = [':INFO']
+
+#---------------------------------------------
+# Performance Optimization
+#---------------------------------------------
+workers = 2                # Set based on CPU cores (CPU * 2 + 1 for optimal performance)
+limit_memory_hard = 2684354560  # 2.5 GB
+limit_memory_soft = 2147483648  # 2 GB
+limit_request = 8192           # Prevent resource-intensive requests
+limit_time_cpu = 60            # CPU time limit in seconds
+limit_time_real = 120          # Real time limit in seconds
+limit_time_real_cron = -1      # No limit for cron jobs
+max_cron_threads = 2           # Number of cron threads
+
+#---------------------------------------------
+# Web Interface
+#---------------------------------------------
+xmlrpc = True
+xmlrpc_interface = 0.0.0.0
+xmlrpc_port = 8069
+longpolling_port = 8072
+list_db = True
+
+#---------------------------------------------
+# Email Settings (Optional)
+#---------------------------------------------
+smtp_server = smtp.example.com
+smtp_port = 587
+smtp_user = user@example.com
+smtp_password = <your_smtp_password>
+smtp_ssl = True
+email_from = user@example.com
+
+#---------------------------------------------
+# Miscellaneous
+#---------------------------------------------
+server_wide_modules = web
