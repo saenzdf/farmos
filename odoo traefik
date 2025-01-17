@@ -1,3 +1,9 @@
+etworks:
+  web:
+    driver: bridge
+  internal:
+    driver: bridge
+
 services:
   db:
     image: postgres:15
@@ -13,63 +19,101 @@ services:
     networks:
       - internal
 
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - UID=2000
+      - GID=2000
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.filename=/dynamic.yml
+      - --providers.docker.network=web
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=http
+      - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_CONTACT_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+#      - --log.level=INFO
+      - --log.level=DEBUG
+
+    networks:
+      - web
+    volumes:
+      - "traefik-certificates:/letsencrypt"
+#      - ./traefik/conf/dynamic.yml:/dynamic.yml
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.traefik.rule: Host(`${TRAEFIK_HOSTNAME}`)
+      traefik.http.routers.traefik.entrypoints: http
+      traefik.http.routers.traefik.middlewares: redirect@file
+      traefik.http.routers.traefik-https.rule: Host(`${TRAEFIK_HOSTNAME}`)
+      traefik.http.routers.traefik-https.entrypoints: https
+      traefik.http.routers.traefik-https.tls: "true"
+      traefik.http.routers.traefik-https.tls.certresolver: le
+      traefik.http.services.traefik.loadbalancer.server.port: "8080"
+
   odoo:
     image: odoo:18.0
     container_name: odoo
-    restart: unless-stopped
     depends_on:
       - db
+    networks:
+      - web
+      - internal
     env_file: .env
     environment:
       HOST: db
       PORT: 5432
       USER: ${POSTGRES_USER}
       PASSWORD: ${POSTGRES_PASSWORD}
+#    healthcheck:
+#     test: ["CMD-SHELL", "curl -f http://localhost:8069 || exit 1"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
     volumes:
-      - odoo-data:/var/lib/odoo
-      - ./addons:/mnt/extra-addons
+      - "${BASE_VOLUME_DIR}/odoo/extra-addons:/opt/odoo/extra-addons"
+      - "${BASE_VOLUME_DIR}/odoo/data:/opt/odoo/data"
+      - "${BASE_VOLUME_DIR}/odoo/logs:/opt/odoo/logs"
+      - "${BASE_VOLUME_DIR}/odoo/conf:/opt/odoo/conf"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.odoo.rule=Host(`your_domain`)"
-      - "traefik.http.services.odoo.loadbalancer.server.port=8069"
-      - "traefik.http.middlewares.odoo-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.odoo.entrypoints=http"
-      - "traefik.http.routers.odoo-https.entrypoints=https"
-      - "traefik.http.routers.odoo-https.rule=Host(`your_domain`)"
-      - "traefik.http.routers.odoo-https.tls.certresolver=myresolver"
-      - "traefik.http.routers.odoo-https.service=odoo"
-    networks:
-      - internal
-      - external
-
-  traefik:
-    image: traefik:v2.10
-    container_name: traefik
-    restart: unless-stopped
-    command:
-      - "--api.insecure=true" # Remove or secure this in production
-      - "--providers.docker=true"
-      - "--entrypoints.http.address=:80"
-      - "--entrypoints.https.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=sammy@your_domain"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "traefik-certificates:/letsencrypt"
-    networks:
-      - external
-
-networks:
-  internal:
-    driver: bridge
-  external:
-    driver: bridge
+      traefik.enable: "true"
+      traefik.http.routers.odoo-http.rule: Host(`${ODOO_HOSTNAME}`)
+      traefik.http.routers.odoo-http.entrypoints: http
+      traefik.http.routers.odoo-http.middlewares: redirect@file
+      traefik.http.routers.odoo-https.rule: Host(`${ODOO_HOSTNAME}`)
+      traefik.http.routers.odoo-https.entrypoints: https
+      traefik.http.routers.odoo-https.tls.certresolver: le
+      traefik.http.services.odoo.loadbalancer.server.port: "8069"
 
 volumes:
-  odoo-data:
   odoo-db-data:
   traefik-certificates:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
