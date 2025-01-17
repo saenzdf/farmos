@@ -107,7 +107,7 @@ services:
       USER: "${POSTGRES_USER}"
       PASSWORD: "${POSTGRES_PASSWORD}"
       # If you have a specific DB to auto-connect, you can add:
-      # DATABASE: "${POSTGRES_DB}"
+       DATABASE: "${POSTGRES_DB}"
       # For Odoo master password, you can set ODOO_MASTER_PASSWD or MASTER_PASSWD
 
     networks:
@@ -117,10 +117,8 @@ services:
     volumes:
       - "${BASE_VOLUME_DIR}/odoo/extra-addons:/opt/odoo/extra-addons"
       - "${BASE_VOLUME_DIR}/odoo/data:/var/lib/odoo"  # Official location for Odoo data
-      # logs & conf can also be symlinked or used differently,
-      # but storing them in /opt/odoo is fine if that's your choice.
       - "${BASE_VOLUME_DIR}/odoo/logs:/opt/odoo/logs"
-      - "${BASE_VOLUME_DIR}/odoo/conf:/opt/odoo/conf"
+      - /odoo/conf:/opt/odoo/conf
 
     ulimits:
       nofile:
