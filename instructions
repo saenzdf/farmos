@@ -103,7 +103,7 @@ Copy
     Create Directories:
         For Odoo:
             mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data
-            nano ~/odoo/odoo-config/odoo.config
+            nano ~/odoo/odoo-config/odoo.conf
 
         For farmOS:
             mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
