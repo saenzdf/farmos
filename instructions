@@ -17,8 +17,6 @@
 2. Install Docker and Docker Compose
 
     Install Docker:
-    bash
-    Copy
 
     sudo apt update
     sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
@@ -28,15 +26,11 @@
     sudo apt install -y docker-ce docker-ce-cli containerd.io
 
     Install Docker Compose:
-    bash
-    Copy
 
     sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*\d')/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
 
     Verify Installation:
-    bash
-    Copy
 
     docker --version
     docker-compose --version
@@ -44,14 +38,10 @@
 3. Set Up Traefik as a Reverse Proxy
 
     Create a Docker Network:
-    bash
-    Copy
 
     docker network create web
 
     Create a traefik Directory:
-    bash
-    Copy
 
     mkdir -p ~/traefik
     cd ~/traefik
@@ -59,15 +49,11 @@
     Create traefik.yml:
 
         Create acme.json:
-    bash
-    Copy
 
     touch acme.json
     chmod 600 acme.json
 
     Start Traefik:
-    bash
-    Copy
 
     docker-compose up -d
 
@@ -82,15 +68,11 @@
 
     Create docker-compose.yml:
     Start Odoo:
-bash
-Copy
 
 docker-compose up -d
 3. Set Up farmOS
 
     Create a farmos Directory:
-    bash
-    Copy
 
     mkdir -p ~/farmos
     cd ~/farmos
@@ -99,8 +81,6 @@ docker-compose up -d
     farmOS can be deployed using Docker a
 
         Start farmOS:
-    bash
-    Copy
 
     docker-compose up -d
 
@@ -137,14 +117,10 @@ Steps to Create Persistent Volumes
     Create Directories:
 
         For Odoo:
-        bash
-        Copy
 
         mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data
 
         For farmOS:
-        bash
-        Copy
 
         mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
 
@@ -199,29 +175,22 @@ List Odoo’s user inside the container:
 
 docker exec -it <odoo-container-name> id odoo
 Create the Directories (if not already created):
-bash
-Copy
 
 mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data
 mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
 
 Set Permissions for Odoo Volumes:
-bash
-Copy
 
 sudo chown -R 101:101 ~/odoo/odoo-data
 sudo chown -R 999:999 ~/odoo/postgresql-data
 
 Set Permissions for farmOS Volumes:
-bash
-Copy
 
 sudo chown -R 33:33 ~/farmos/farmos-data
 sudo chown -R 999:999 ~/farmos/mysql-data
+
 Verify Permissions:
 Use the ls -l command to verify the ownership of the directories:
-bash
-Copy
 
 ls -l ~/odoo/
 ls -l ~/farmos/
