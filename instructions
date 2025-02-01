@@ -1,13 +1,13 @@
 1. Set Up a Google Cloud VM
 
     Create a VM Instance:
-        Go to the Google Cloud Console.
-        Create a new VM instance with Debian (e.g., Debian 11).
-        Ensure the VM has sufficient resources (e.g., 2 vCPUs, 4 GB RAM).
-        Allow HTTP/HTTPS traffic in the firewall settings.
+    Go to the Google Cloud Console.
+    Create a new VM instance with Debian (e.g., Debian 11).
+    Ensure the VM has sufficient resources (e.g., 2 vCPUs, 4 GB RAM).
+    Allow HTTP/HTTPS traffic in the firewall settings.
 
     SSH into the VM:
-        Use the Google Cloud Console or gcloud CLI to SSH into your VM.
+    Use the Google Cloud Console or gcloud CLI to SSH into your VM.
 
 2. Install Docker and Docker Compose
     Install Docker:
