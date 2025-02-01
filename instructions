@@ -55,7 +55,7 @@ Then log out and log back in, or reboot:
         chmod 600 acme.json
 
     Start Traefik:
-        docker-compose up -d
+        sudo docker-compose up -d
 
 5. Set Up Odoo with Docker
 
