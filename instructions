@@ -63,6 +63,7 @@ Then log out and log back in, or reboot:
          mkdir -p ~/odoo
          cd ~/odoo
         nano docker-compose.yml
+        nano .env
 
 5.1 Set Up farmOS
 
@@ -70,6 +71,7 @@ Then log out and log back in, or reboot:
         mkdir -p ~/farmos
         cd ~/farmos
         nano docker-compose.yml
+        nano .env
     
 
 Explanation of Volumes:
