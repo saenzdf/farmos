@@ -136,8 +136,12 @@ If you are using Odoo inside a Docker container, the user ID might be different 
         ls -l ~/farmos/
         ls -ld ~/odoo/odoo-data
 
-6.  start docker compose
-        docker-compose up -d
+6.  start docker compose in each folder
+    cd farmos
+    sudo docker-compose up -d
+    cd
+    cd odoo
+    sudo docker-compose up -d
 
 5. Configure DNS
     Point your domain (e.g., odoo.yourdomain.com) to the public IP of your Google Cloud VM.
