@@ -74,7 +74,7 @@ Then log out and log back in, or reboot:
         nano .env
     
 
-Explanation of Volumes:
+5.2 Explanation of Volumes:
 
     ./farmos-data:/var/www/html/sites/default/files:
         Stores farmOS's filestore (uploaded files).
@@ -107,31 +107,6 @@ Copy
 
         For farmOS:
             mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
-
-The error chown: invalid user: 'odoo:odoo' means that the user odoo and/or the group odoo does not exist on your system.
-
-5.3.1. Check If the odoo User Exists
-    Run:
-            getent passwd odoo
-
-    If this returns nothing, the odoo user does not exist.
-    If it returns something like:
-
-            odoo:x:101:101::/home/odoo:/bin/bash
-
-    then the user does exist.
-
-5.3.2. Check If the odoo Group Exists
-    Run:
-
-            getent group odoo
-
-    If nothing is returned, the odoo group does not exist.
-    If it returns:
-
-            odoo:x:101:
-
-    then the group exists.
 
 5.3.3. Create the odoo User and Group (If Needed)
 
