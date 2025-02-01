@@ -34,7 +34,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: saenzdf@gmail.com  # Replace with your email
+      email: your@mail.com  # Replace with your email
       storage: /acme.json  # File to store SSL certificates
       httpChallenge:
         entryPoint: web  # Use the "web" entry point for HTTP challenges
