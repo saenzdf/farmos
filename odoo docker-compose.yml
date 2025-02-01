@@ -19,7 +19,7 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.odoo.rule=Host(`odoo.terrabloque.com`)"
+      - "traefik.http.routers.odoo.rule=Host(`terrabloque.com`)"
       - "traefik.http.routers.odoo.entrypoints=websecure"
       - "traefik.http.routers.odoo.tls.certresolver=letsencrypt"
 
