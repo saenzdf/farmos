@@ -5,12 +5,13 @@ services:
     image: odoo:latest
     container_name: odoo
     restart: unless-stopped
+    env_file: .env
     depends_on:
       - db
     environment:
       - HOST=db
-      - USER=odoo
-      - PASSWORD=odoo
+      - USER="${POSTGRES_USER}"
+      - PASSWORD="${POSTGRES_PASSWORD}"
     volumes:
       - odoo-data:/var/lib/odoo  # Named volume for Odoo filestore
       - odoo-config:/etc/odoo    # Named volume for Odoo configuration
@@ -26,10 +27,11 @@ services:
     image: postgres:13
     container_name: odoo-db
     restart: unless-stopped
+    env_file: .env
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=odoo
-      - POSTGRES_PASSWORD=derbeste
+      - POSTGRES_DB= "${POSTGRES_DB}"
+      - POSTGRES_USER= "${POSTGRES_USER}"
+      - POSTGRES_PASSWORD= "${POSTGRES_PASSWORD}"
     volumes:
       - postgresql-data:/var/lib/postgresql/data  # Named volume for PostgreSQL database
     networks:
