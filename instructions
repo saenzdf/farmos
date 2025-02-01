@@ -10,7 +10,6 @@
         Use the Google Cloud Console or gcloud CLI to SSH into your VM.
 
 2. Install Docker and Docker Compose
-
     Install Docker:
         sudo apt update
         sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
@@ -27,7 +26,20 @@
         docker --version
         docker-compose --version
 
-3. Set Up Traefik as a Reverse Proxy
+3. Check If Your User Has Sudo Privileges
+
+    Run:
+        whoami
+        groups $(whoami)
+
+    If your username is NOT in the sudo group, you don’t have full sudo privileges.
+    To add yourself to sudo, run:
+        sudo usermod -aG sudo $(whoami)
+
+Then log out and log back in, or reboot:
+        sudo reboot
+
+4. Set Up Traefik as a Reverse Proxy
 
     Create a Docker Network:
         docker network create web
@@ -45,14 +57,14 @@
     Start Traefik:
         docker-compose up -d
 
-4. Set Up Odoo with Docker
+5. Set Up Odoo with Docker
 
     Create an odoo Directory:
          mkdir -p ~/odoo
          cd ~/odoo
         nano docker-compose.yml
 
-4.1 Set Up farmOS
+5.1 Set Up farmOS
 
     Create a farmos Directory:
         mkdir -p ~/farmos
@@ -84,7 +96,7 @@ Copy
 ├── farmos-data/      # farmOS filestore
 └── mysql-data/       # MySQL database
 
-4.3Steps to Create Persistent Volumes
+5.3 Steps to Create Persistent Volumes
 
     Create Directories:
         For Odoo:
@@ -94,7 +106,8 @@ Copy
             mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
 
 The error chown: invalid user: 'odoo:odoo' means that the user odoo and/or the group odoo does not exist on your system.
-4.3.1. Check If the odoo User Exists
+
+5.3.1. Check If the odoo User Exists
     Run:
             getent passwd odoo
 
@@ -105,7 +118,7 @@ The error chown: invalid user: 'odoo:odoo' means that the user odoo and/or the g
 
     then the user does exist.
 
-4.3.2. Check If the odoo Group Exists
+5.3.2. Check If the odoo Group Exists
     Run:
 
             getent group odoo
@@ -117,7 +130,7 @@ The error chown: invalid user: 'odoo:odoo' means that the user odoo and/or the g
 
     then the group exists.
 
-4.3.3. Create the odoo User and Group (If Needed)
+5.3.3. Create the odoo User and Group (If Needed)
 
     If odoo does not exist, create it:
         sudo groupadd --system odoo
@@ -140,11 +153,29 @@ If you are using Odoo inside a Docker container, the user ID might be different 
         sudo chown -R 33:33 ~/farmos/farmos-data
         sudo chown -R 999:999 ~/farmos/mysql-data
 
-    Verify Permissions:
-        Use the ls -l command to verify the ownership of the directories:
+    Verify Permissions: Use the ls -l command to verify the ownership of the directories and that can be wrote:
         ls -l ~/odoo/
         ls -l ~/farmos/
         ls -ld ~/odoo/odoo-data
 
-    start docker compose
+6.  start docker compose
         docker-compose up -d
+
+5. Configure DNS
+    Point your domain (e.g., odoo.yourdomain.com) to the public IP of your Google Cloud VM.
+
+6. Access Odoo and farmos
+    Open your browser and go to https://odoo.yourdomain.com. You should see the Odoo login page.
+    Open your browser and go to https://farm.yourdomain.com. You should see the Odoo login page.
+
+7. Secure Traefik Dashboard
+    Access the Traefik dashboard at https://traefik.yourdomain.com.
+    Use the labels in the docker-compose.yml to secure it further if needed.
+
+8. Disable SELinux or AppArmor (Temporarily)
+If SELinux or AppArmor is enabled, it might be restricting the ownership change. You can temporarily disable it to test:
+    For SELinux:
+        sudo setenforce 0
+
+    For AppArmor:
+        sudo systemctl stop apparmor
