@@ -125,7 +125,8 @@ If you are using Odoo inside a Docker container, the user ID might be different 
     Set Permissions for Odoo Volumes:
         sudo chown -R odoo:odoo ~/odoo/odoo-data
         sudo chown -R odoo:odoo ~/odoo/odoo-config
-        sudo chown -R 999:999 ~/odoo/postgresql-data
+        sudo groupadd -g 1991 odoo-group
+        sudo chown -R 999:1991 ~/odoo/postgresql-data
 
     Set Permissions for farmOS Volumes:
         sudo chown -R www-data:www-data ~/farmos/farmos-data
