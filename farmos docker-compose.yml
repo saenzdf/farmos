@@ -27,6 +27,7 @@ services:
     container_name: farmos-db
     restart: unless-stopped
     env_file: .env
+    user: "999:1999"  # Runs the container as UID 999, GID 1999
     environment:
       - MYSQL_DATABASE= "${MYSQL_DATABASE}"
       - MYSQL_USER= "${MYSQL_USER}"
