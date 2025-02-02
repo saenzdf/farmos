@@ -130,7 +130,8 @@ If you are using Odoo inside a Docker container, the user ID might be different 
     Set Permissions for farmOS Volumes:
         sudo chown -R www-data:www-data ~/farmos/farmos-data
         sudo chmod -R u+w ~/farmos/farmos-data
-        sudo chown -R 999:999 ~/farmos/mysql-data
+        sudo groupadd -g 1999 farmos-group
+        sudo chown -R 999:1999 ~/farmos/mysql-data
 
     Verify Permissions: Use the ls -l command to verify the ownership of the directories and that can be wrote:
         ls -l ~/odoo/
