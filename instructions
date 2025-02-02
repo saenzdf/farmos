@@ -140,6 +140,7 @@ If you are using Odoo inside a Docker container, the user ID might be different 
 6.  start docker compose in each folder
     cd farmos
     sudo docker-compose up -d
+    sudo docker exec --user root -it farmos chown -R www-data:www-data /var/www/html/sites/default/files
     cd
     cd odoo
     sudo docker-compose up -d
