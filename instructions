@@ -151,7 +151,7 @@ If you are using Odoo inside a Docker container, the user ID might be different 
     Point your domain (e.g., odoo.yourdomain.com) to the public IP of your Google Cloud VM.
 
 6. Access Odoo and farmos
-    Open your browser and go to https://odoo.yourdomain.com. You should see the Odoo login page.
+    Open your browser and go to https://yourdomain.com. You should see the Odoo login page.
     Open your browser and go to https://farm.yourdomain.com. You should see the Odoo login page.
 
 7. Secure Traefik Dashboard
