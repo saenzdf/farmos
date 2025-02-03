@@ -21,6 +21,7 @@ services:
       - "traefik.http.routers.farmos.rule=Host(`farm.terrabloque.com`)"
       - "traefik.http.routers.farmos.entrypoints=websecure"
       - "traefik.http.routers.farmos.tls.certresolver=letsencrypt"
+      - "traefik.http.services.farmos.loadbalancer.server.port=80"
 
   db:
     image: mysql:5.7
