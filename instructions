@@ -148,7 +148,7 @@ If you are using Odoo inside a Docker container, the user ID might be different 
     sudo docker-compose up -d
 
 5. Configure DNS
-    Point your domain (e.g., odoo.yourdomain.com) to the public IP of your Google Cloud VM.
+    Point your domain (e.g., yourdomain.com) to the public IP of your Google Cloud VM.
 
 6. Access Odoo and farmos
     Open your browser and go to https://yourdomain.com. You should see the Odoo login page.
