@@ -20,10 +20,10 @@ services:
     env_file: .env
     user: "1000:1000"
     environment:
-      - ASPNETCORE_URLS=http://+:3000
+      - ASPNETCORE_URLS=http://+:3001
       - ASPNETCORE_ENVIRONMENT=Production
-      - PORT=3000
-      - JWT_SECRET=YOUR_JWT_SECRET_HERE
+      - PORT=3001
+      - JWT_SECRET= ${YOUR_JWT_SECRET_HERE}
       - CONNECTION_STRING=mongodb://mongo:27017/speckle?retryWrites=true&w=majority
     depends_on:
       - mongo
@@ -34,7 +34,7 @@ services:
       - "traefik.http.routers.speckle-api.rule=Host(`speckle-api.terrabloque.com`)"
       - "traefik.http.routers.speckle-api.entrypoints=websecure"
       - "traefik.http.routers.speckle-api.tls=true"
-      - "traefik.http.services.speckle-api.loadbalancer.server.port=3000"
+      - "traefik.http.services.speckle-api.loadbalancer.server.port=3001"
     networks:
       - web
 
