@@ -5,7 +5,7 @@ services:
     image: mongo:4.4
     container_name: speckle-mongo
     restart: always
-    user:
+    user: "1000:1000"
     volumes:
       - mongo-data:/data/db
     labels:
@@ -18,7 +18,7 @@ services:
     container_name: speckle-api
     restart: always
     env_file: .env
-    user: 
+    user: "1000:1000"
     environment:
       - ASPNETCORE_URLS=http://+:3000
       - ASPNETCORE_ENVIRONMENT=Production
@@ -35,7 +35,7 @@ services:
       - "traefik.http.routers.speckle-api.entrypoints=websecure"
       - "traefik.http.routers.speckle-api.tls=true"
       - "traefik.http.services.speckle-api.loadbalancer.server.port=3000"
-     networks:
+    networks:
       - web
 
   speckle-web:
@@ -43,7 +43,7 @@ services:
     container_name: speckle-web
     restart: always
     env_file: .env
-    user: 
+    user: "1000:1000"
     environment:
       - API_URL=http://speckle-api:3000
     depends_on:
