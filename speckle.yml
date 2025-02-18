@@ -5,15 +5,20 @@ services:
     image: mongo:4.4
     container_name: speckle-mongo
     restart: always
+    user:
     volumes:
       - mongo-data:/data/db
     labels:
       - "traefik.enable=false"
+    networks:
+      - web
 
   speckle-api:
     image: speckle/speckle-server:latest
     container_name: speckle-api
     restart: always
+    env_file: .env
+    user: 
     environment:
       - ASPNETCORE_URLS=http://+:3000
       - ASPNETCORE_ENVIRONMENT=Production
@@ -26,26 +31,36 @@ services:
       - speckle-data:/app/data
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.speckle-api.rule=Host(`speckle-api.yourdomain.com`)"
+      - "traefik.http.routers.speckle-api.rule=Host(`speckle-api.terrabloque.com`)"
       - "traefik.http.routers.speckle-api.entrypoints=websecure"
       - "traefik.http.routers.speckle-api.tls=true"
       - "traefik.http.services.speckle-api.loadbalancer.server.port=3000"
+     networks:
+      - web
 
   speckle-web:
     image: speckle/speckle-server-web:latest
     container_name: speckle-web
     restart: always
+    env_file: .env
+    user: 
     environment:
       - API_URL=http://speckle-api:3000
     depends_on:
       - speckle-api
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.speckle-web.rule=Host(`speckle.yourdomain.com`)"
+      - "traefik.http.routers.speckle-web.rule=Host(`speckle.terrabloque.com`)"
       - "traefik.http.routers.speckle-web.entrypoints=websecure"
       - "traefik.http.routers.speckle-web.tls=true"
-      - "traefik.http.services.speckle-web.loadbalancer.server.port=80"
+      - "traefik.http.services.speckle-web.loadbalancer.server.port=81"
+    networks:
+      - web
 
 volumes:
   mongo-data:
   speckle-data:
+
+networks:
+  web:
+    external: true
