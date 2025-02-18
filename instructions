@@ -135,16 +135,16 @@ If you are using Odoo inside a Docker container, the user ID might be different 
         sudo chown -R 999:1999 ~/farmos/mysql-data
     
     Set Permissions for speckle Volumes:
-        sudo chown -R 1000:1000 ~/speckle/app/data
-        sudo chmod -R u+w ~/speckle/app/data
+        mkdir -p ~/speckle/speckle-data ~/speckle/mongo-data
+        sudo chown -R 1000:1000 ~/speckle/speckle-data ~/speckle/mongo-data
+        sudo chmod -R u+w ~/speckle/speckle-data ~/speckle/mongo-data
         #sudo groupadd -g 1000 speckle-group
-        sudo chown -R 1000:1000 ~/speckle/app/data
 
     Verify Permissions: Use the ls -l command to verify the ownership of the directories and that can be wrote:
         ls -l ~/odoo/
         ls -l ~/farmos/
         ls -ld ~/odoo/odoo-data
-        ls -l ~/speckle/app/data
+        ls -l ~/speckle
 
 6.  start docker compose in each folder
     cd farmos
