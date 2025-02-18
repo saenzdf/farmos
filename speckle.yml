@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: speckle-mongo
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    labels:
+      - "traefik.enable=false"
+
+  speckle-api:
+    image: speckle/speckle-server:latest
+    container_name: speckle-api
+    restart: always
+    environment:
+      - ASPNETCORE_URLS=http://+:3000
+      - ASPNETCORE_ENVIRONMENT=Production
+      - PORT=3000
+      - JWT_SECRET=YOUR_JWT_SECRET_HERE
+      - CONNECTION_STRING=mongodb://mongo:27017/speckle?retryWrites=true&w=majority
+    depends_on:
+      - mongo
+    volumes:
+      - speckle-data:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.speckle-api.rule=Host(`speckle-api.yourdomain.com`)"
+      - "traefik.http.routers.speckle-api.entrypoints=websecure"
+      - "traefik.http.routers.speckle-api.tls=true"
+      - "traefik.http.services.speckle-api.loadbalancer.server.port=3000"
+
+  speckle-web:
+    image: speckle/speckle-server-web:latest
+    container_name: speckle-web
+    restart: always
+    environment:
+      - API_URL=http://speckle-api:3000
+    depends_on:
+      - speckle-api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.speckle-web.rule=Host(`speckle.yourdomain.com`)"
+      - "traefik.http.routers.speckle-web.entrypoints=websecure"
+      - "traefik.http.routers.speckle-web.tls=true"
+      - "traefik.http.services.speckle-web.loadbalancer.server.port=80"
+
+volumes:
+  mongo-data:
+  speckle-data:
