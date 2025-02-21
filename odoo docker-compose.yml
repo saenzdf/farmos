@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  odoo:
+    image: odoo:latest
+    container_name: odoo
+    restart: unless-stopped
+    env_file: .env
+    user: "odoo:odoo" 
+    depends_on:
+      - db
+    environment:
+      - HOST=db
+      - USER= ${POSTGRES_USER} 
+      - PASSWORD= ${POSTGRES_PASSWORD}
+    volumes:
+      - odoo-data:/var/lib/odoo  # Named volume for Odoo filestore
+      - odoo-config:/etc/odoo    # Named volume for Odoo configuration
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.odoo.rule=Host(`terrabloque.com`)"
+      - "traefik.http.routers.odoo.entrypoints=websecure"
+      - "traefik.http.routers.odoo.tls.certresolver=letsencrypt"
+
+  db:
+    image: postgres:13
+    container_name: odoo-db
+    restart: unless-stopped
+    env_file: .env
+    user: "999:1991"  # Runs the container as UID 999, GID 1991
+    environment:
+      - POSTGRES_DB= ${POSTGRES_DB}
+      - POSTGRES_USER= ${POSTGRES_USER}
+      - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD}
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data  # Named volume for PostgreSQL database
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+
+volumes:
+  odoo-data:
+  postgresql-data:
+  odoo-config:
+

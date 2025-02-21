@@ -1,7 +1,4 @@
 # farmos odoo
-Personal settings installing farmos
-I am using odoo traefik 
-.env must be created and populated
-odoo.conf can aslo be created before
-
+Personal settings installing farmos and odoo on a debian based google cloud vm 
+I am using traefik as a reverse proxy
 

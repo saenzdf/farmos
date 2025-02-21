@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  farmos:
+    image: farmos/farmos:latest
+    container_name: farmos
+    restart: unless-stopped
+    env_file: .env
+    user: "33:33"  # Run as www-data user
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE= ${MYSQL_DATABASE}
+      - MYSQL_USER= ${MYSQL_USER}
+      - MYSQL_PASSWORD= ${MYSQL_PASSWORD}
+    volumes:
+      - farmos-data:/var/www/html/sites/default/files  # Named volume for farmOS filestore
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.farmos.rule=Host(`farm.terrabloque.com`)"
+      - "traefik.http.routers.farmos.entrypoints=websecure"
+      - "traefik.http.routers.farmos.tls.certresolver=letsencrypt"
+      - "traefik.http.services.farmos.loadbalancer.server.port=80"
+
+  db:
+    image: mysql:5.7
+    container_name: farmos-db
+    restart: unless-stopped
+    env_file: .env
+    user: "999:1999"  # Runs the container as UID 999, GID 1999
+    environment:
+      - MYSQL_DATABASE= ${MYSQL_DATABASE}
+      - MYSQL_USER= ${MYSQL_USER}
+      - MYSQL_PASSWORD= ${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD= ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql  # Named volume for MySQL database
+    networks:
+      - web
+
+volumes:
+  farmos-data:
+  mysql-data:
+
+networks:
+  web:
+    external: true

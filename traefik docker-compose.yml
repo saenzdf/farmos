@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"  # HTTP
+      - "443:443"  # HTTPS
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker socket
+      - ./traefik.yml:/etc/traefik/traefik.yml  # Traefik configuration
+      - ./acme.json:/acme.json  # SSL certificates storage
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"  # Enable Traefik for this container
+      - "traefik.http.routers.traefik.rule=Host(`traefik.terrabloque.com`)"  # Dashboard domain
+      - "traefik.http.routers.traefik.service=api@internal"  # Link to the internal API
+      - "traefik.http.routers.traefik.entrypoints=websecure"  # Use HTTPS
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"  # Use Let's Encrypt
+
+networks:
+  web:
+    external: true  # Use an external Docker network
+
