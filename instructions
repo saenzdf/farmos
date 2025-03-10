@@ -175,3 +175,20 @@ If SELinux or AppArmor is enabled, it might be restricting the ownership change.
 
     For AppArmor:
         sudo systemctl stop apparmor
+
+9. Create a custom module in odoo
+
+Inside the host machine, navigate to your custom modules directory:
+
+cd ~/odoo-custom-modules
+
+Now, create your custom module:
+
+mkdir -p my_custom_module/{models,views}
+touch my_custom_module/__init__.py
+touch my_custom_module/__manifest__.py
+touch my_custom_module/models/__init__.py
+touch my_custom_module/models/product_category_inherit.py
+touch my_custom_module/views/product_category_views.xml
+
+
