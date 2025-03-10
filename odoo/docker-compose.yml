@@ -16,6 +16,7 @@ services:
     volumes:
       - odoo-data:/var/lib/odoo  # Named volume for Odoo filestore
       - odoo-config:/etc/odoo    # Named volume for Odoo configuration
+      - odoo-custom-modules:/mnt/extra-addons  # Mount custom modules directory
     networks:
       - web
     labels:
@@ -47,4 +48,5 @@ volumes:
   odoo-data:
   postgresql-data:
   odoo-config:
+  odoo-custom-modules:
 
