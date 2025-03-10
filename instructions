@@ -191,4 +191,7 @@ touch my_custom_module/models/__init__.py
 touch my_custom_module/models/product_category_inherit.py
 touch my_custom_module/views/product_category_views.xml
 
+sudo chown -R odoo:odoo ~/odoo/odoo-custom-modules/my_custom_module
+sudo chmod -R 775 ~/odoo/odoo-custom-modules/my_custom_module
+
 
