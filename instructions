@@ -93,6 +93,7 @@ Copy
 ├── odoo-data/        # Odoo filestore
 ├── odoo-config/      # Odoo configuration
 └── postgresql-data/  # PostgreSQL database
+|__ odoo-custom-modules # Custom modules and addons
 
 ~/farmos/
 ├── farmos-data/      # farmOS filestore
@@ -102,8 +103,9 @@ Copy
 
     Create Directories:
         For Odoo:
-            mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data
+            mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data ~/odoo/odoo-custom-modules
             nano ~/odoo/odoo-config/odoo.conf
+            nano ~/odoo/odoo-custom-modules/
 
         For farmOS:
             mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
@@ -125,6 +127,7 @@ If you are using Odoo inside a Docker container, the user ID might be different 
     Set Permissions for Odoo Volumes:
         sudo chown -R odoo:odoo ~/odoo/odoo-data
         sudo chown -R odoo:odoo ~/odoo/odoo-config
+        sudo chown -R odoo:odoo ~/odoo-custom-modules/my_custom_module
         sudo groupadd -g 1991 odoo-group
         sudo chown -R 999:1991 ~/odoo/postgresql-data
 
