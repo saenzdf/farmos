@@ -184,10 +184,10 @@ sudo chown -R odoo:odoo ~/odoo/odoo-custom-modules/my_custom_module
 sudo chmod -R 775 ~/odoo/odoo-custom-modules/my_custom_module
 
 # For odoo to recognize the module inside the container
+sudo docker cp ~/odoo/odoo-custom-modules/my_custom_module odoo:/mnt/extra-addons
 sudo docker exec -it odoo bash -c "pkill -f odoo"
 sudo docker exec -it odoo bash -c "odoo -u my_custom_module --db-filter=terrabloque --stop-after-init"
 sudo docker restart odoo
-sudo docker cp ~/odoo/odoo-custom-modules/my_custom_module odoo:/mnt/extra-addons
 
 #verify
 sudo docker exec -it odoo bash -c "odoo --db-filter=terrabloque -i my_custom_module --stop-after-init"
