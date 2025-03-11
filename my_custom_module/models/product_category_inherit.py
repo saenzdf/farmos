@@ -7,7 +7,7 @@ class ProductCategory(models.Model):
         'res.company',
         string="Company",
         default=lambda self: self.env.company,
-        required=True
+        index=True
     )
 
 class POSCategory(models.Model):
@@ -17,5 +17,5 @@ class POSCategory(models.Model):
         'res.company',
         string="Company",
         default=lambda self: self.env.company,
-        required=True
+        index=True
     )
