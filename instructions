@@ -1,6 +1,6 @@
 1. Set Up a Google Cloud VM
 
-    Create a VM Instance:
+ """ Create a VM Instance:
     Go to the Google Cloud Console.
     Create a new VM instance with Debian (e.g., Debian 11).
     Ensure the VM has sufficient resources (e.g., 2 vCPUs, 4 GB RAM).
@@ -8,83 +8,65 @@
 
     SSH into the VM:
     Use the Google Cloud Console or gcloud CLI to SSH into your VM.
+"""
 
 2. Install Docker and Docker Compose
-    Install Docker:
-        sudo apt update
-        sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-        curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt update
-        sudo apt install -y docker-ce docker-ce-cli containerd.io
+    # Install Docker:
+sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io
 
-    Install Docker Compose:
-        sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*\d')/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
+    #Install Docker Compose:
+sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*\d')/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-    Verify Installation:
-        docker --version
-        docker-compose --version
+    #Verify Installation:
+docker --version
+docker-compose --version
 
 3. Check If Your User Has Sudo Privileges
 
-    Run:
-        whoami
-        groups $(whoami)
+    #Run if necesary:
+whoami
+groups $(whoami)
 
-    If your username is NOT in the sudo group, you don’t have full sudo privileges.
-    To add yourself to sudo, run:
-        sudo usermod -aG sudo $(whoami)
+    #If your username is NOT in the sudo group, you don’t have full sudo privileges.
+    #To add yourself to sudo, run:
+sudo usermod -aG sudo $(whoami)
 
-Then log out and log back in, or reboot:
-        sudo reboot
+    #Then log out and log back in, or reboot:
+sudo reboot
 
 4. Set Up Traefik as a Reverse Proxy
 
-    Create a Docker Network:
-        docker network create web
+    #Create a Docker Network:
+docker network create web
 
-    Create a traefik Directory:
-        mkdir -p ~/traefik
-        cd ~/traefik
-        nano traefik.yml
-        nano docker-compose.yml
+    #Create a traefik Directory:
+mkdir -p ~/traefik
+cd ~/traefik
+nano traefik.yml
+nano docker-compose.yml
 
-    Create acme.json:
-        touch acme.json
-        chmod 600 acme.json
+    #Create acme.json:
+touch acme.json
+chmod 600 acme.json
 
-    Start Traefik:
-        sudo docker-compose up -d
+    #Start Traefik:
+sudo docker-compose up -d
 
 5. Set Up Odoo with Docker
 
-    Create an odoo Directory:
-         mkdir -p ~/odoo
-         cd ~/odoo
-        nano docker-compose.yml
-        nano .env
+    #Create an odoo Directory:
+mkdir -p ~/odoo
+cd ~/odoo
+nano docker-compose.yml
+nano .env
 
-5.1 Set Up farmOS
-
-    Create a farmos Directory:
-        mkdir -p ~/farmos
-        cd ~/farmos
-        nano docker-compose.yml
-        nano .env
-    
-
-5.2 Explanation of Volumes:
-
-    ./farmos-data:/var/www/html/sites/default/files:
-        Stores farmOS's filestore (uploaded files).
-        Located at ./farmos-data on the host machine.
-
-    ./mysql-data:/var/lib/mysql:
-        Stores MySQL database files.
-        Located at ./mysql-data on the host machine.
-
-Folder Structure
+""" Folder Structure
 
 After setting up persistent volumes, your folder structure will look like this:
 Copy
@@ -94,104 +76,125 @@ Copy
 ├── odoo-config/      # Odoo configuration
 └── postgresql-data/  # PostgreSQL database
 |__ odoo-custom-modules # Custom modules and addons
+"""
+  #Create Directories:
+mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data ~/odoo/odoo-custom-modules
+nano ~/odoo/odoo-config/odoo.conf
+
+ #Create the odoo User and Group (If Needed)
+
+    #If odoo does not exist, create it:
+sudo groupadd --system odoo
+sudo useradd -s /bin/bash -d /opt/odoo -m -g odoo odoo
+
+    #Then set a password for odoo:
+sudo passwd odoo
+
+#If you are using Odoo inside a Docker container, the user ID might be different inside the container.
+
+    #List Odoo’s user inside the container:
+docker exec -it odoo id odoo
+
+    #Set Permissions for Odoo Volumes:
+sudo chown -R odoo:odoo ~/odoo/odoo-data
+sudo chown -R odoo:odoo ~/odoo/odoo-config
+sudo chown -R odoo:odoo ~/odoo-custom-modules/my_custom_module
+sudo groupadd -g 1991 odoo-group
+sudo chown -R 999:1991 ~/odoo/postgresql-data
+
+sudo docker-compose up -d
+
+
+    5.1 Set Up farmOS
+
+    #Create a farmos Directory:
+mkdir -p ~/farmos
+cd ~/farmos
+nano docker-compose.yml
+nano .env    
+
+ #Explanation of Volumes:
+"""
+    ./farmos-data:/var/www/html/sites/default/files:
+        Stores farmOS's filestore (uploaded files).
+        Located at ./farmos-data on the host machine.
+
+    ./mysql-data:/var/lib/mysql:
+        Stores MySQL database files.
+        Located at ./mysql-data on the host machine.
 
 ~/farmos/
 ├── farmos-data/      # farmOS filestore
 └── mysql-data/       # MySQL database
+"""
 
-5.3 Steps to Create Persistent Volumes
+    #Steps to Create Persistent Volumes for farmOS:
+mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
 
-    Create Directories:
-        For Odoo:
-            mkdir -p ~/odoo/odoo-data ~/odoo/odoo-config ~/odoo/postgresql-data ~/odoo/odoo-custom-modules
-            nano ~/odoo/odoo-config/odoo.conf
-            nano ~/odoo/odoo-custom-modules/
-
-        For farmOS:
-            mkdir -p ~/farmos/farmos-data ~/farmos/mysql-data
-
-5.3.3. Create the odoo User and Group (If Needed)
-
-    If odoo does not exist, create it:
-        sudo groupadd --system odoo
-        sudo useradd -s /bin/bash -d /opt/odoo -m -g odoo odoo
-
-    Then set a password for odoo:
-        sudo passwd odoo
-
-If you are using Odoo inside a Docker container, the user ID might be different inside the container.
-
-    List Odoo’s user inside the container:
-        docker exec -it <odoo-container-name> id odoo
-
-    Set Permissions for Odoo Volumes:
-        sudo chown -R odoo:odoo ~/odoo/odoo-data
-        sudo chown -R odoo:odoo ~/odoo/odoo-config
-        sudo chown -R odoo:odoo ~/odoo-custom-modules/my_custom_module
-        sudo groupadd -g 1991 odoo-group
-        sudo chown -R 999:1991 ~/odoo/postgresql-data
-
-    Set Permissions for farmOS Volumes:
-        sudo chown -R www-data:www-data ~/farmos/farmos-data
-        sudo chmod -R u+w ~/farmos/farmos-data
-        sudo groupadd -g 1999 farmos-group
-        sudo chown -R 999:1999 ~/farmos/mysql-data
+    #Set Permissions for farmOS Volumes:
+sudo chown -R www-data:www-data ~/farmos/farmos-data
+sudo chmod -R u+w ~/farmos/farmos-data
+sudo groupadd -g 1999 farmos-group
+sudo chown -R 999:1999 ~/farmos/mysql-data
     
-    Set Permissions for speckle Volumes:
-        mkdir -p ~/speckle/speckle-data ~/speckle/mongo-data
-        sudo chown -R 1000:1000 ~/speckle/speckle-data ~/speckle/mongo-data
-        sudo chmod -R u+w ~/speckle/speckle-data ~/speckle/mongo-data
-        #sudo groupadd -g 1000 speckle-group
+    
+    #Verify Permissions: Use the ls -l command to verify the ownership of the directories and that can be wrote:
+ls -l ~/odoo/
+ls -l ~/farmos/
+ls -ld ~/odoo/odoo-data
+        
+sudo docker-compose up -d
+sudo docker exec --user root -it farmos chown -R www-data:www-data /var/www/html/sites/default/files
 
-    Verify Permissions: Use the ls -l command to verify the ownership of the directories and that can be wrote:
-        ls -l ~/odoo/
-        ls -l ~/farmos/
-        ls -ld ~/odoo/odoo-data
-        ls -l ~/speckle
-
-6.  start docker compose in each folder
-    cd farmos
-    sudo docker-compose up -d
-    sudo docker exec --user root -it farmos chown -R www-data:www-data /var/www/html/sites/default/files
-    cd
-    cd odoo
-    sudo docker-compose up -d
-
-5. Configure DNS
+6. Configure DNS
     Point your domain (e.g., yourdomain.com) to the public IP of your Google Cloud VM.
 
-6. Access Odoo and farmos
+7. Access Odoo and farmos
     Open your browser and go to https://yourdomain.com. You should see the Odoo login page.
     Open your browser and go to https://farm.yourdomain.com. You should see the Odoo login page.
 
-7. Secure Traefik Dashboard
+8. Secure Traefik Dashboard
     Access the Traefik dashboard at https://traefik.yourdomain.com.
     Use the labels in the docker-compose.yml to secure it further if needed.
 
-8. Disable SELinux or AppArmor (Temporarily)
+9. Disable SELinux or AppArmor (Temporarily)
 If SELinux or AppArmor is enabled, it might be restricting the ownership change. You can temporarily disable it to test:
-    For SELinux:
-        sudo setenforce 0
 
     For AppArmor:
         sudo systemctl stop apparmor
 
-9. Create a custom module in odoo
+10. Create a custom module in odoo
 
-Inside the host machine, navigate to your custom modules directory:
+#Inside the host machine, navigate to your custom modules directory:
+sudo mkdir -p ~/odoo/odoo-custom-modules
+cd ~/odoo/odoo-custom-modules
 
-cd ~/odoo-custom-modules
+# Now, create your custom module:
 
-Now, create your custom module:
+sudo mkdir -p my_custom_module/{models,views}
+sudo touch my_custom_module/__init__.py
+sudo touch my_custom_module/__manifest__.py
+sudo touch my_custom_module/models/__init__.py
+sudo touch my_custom_module/models/product_category_inherit.py
+sudo touch my_custom_module/views/product_category_views.xml
 
-mkdir -p my_custom_module/{models,views}
-touch my_custom_module/__init__.py
-touch my_custom_module/__manifest__.py
-touch my_custom_module/models/__init__.py
-touch my_custom_module/models/product_category_inherit.py
-touch my_custom_module/views/product_category_views.xml
+#Permisions and set owner 
 
 sudo chown -R odoo:odoo ~/odoo/odoo-custom-modules/my_custom_module
 sudo chmod -R 775 ~/odoo/odoo-custom-modules/my_custom_module
 
+# For odoo to recognize the module inside the container
+sudo docker exec -it odoo bash -c "pkill -f odoo"
+sudo docker exec -it odoo bash -c "odoo -u my_custom_module --db-filter=terrabloque --stop-after-init"
+sudo docker restart odoo
+sudo docker cp ~/odoo/odoo-custom-modules/my_custom_module odoo:/mnt/extra-addons
+
+#verify
+sudo docker exec -it odoo bash -c "odoo --db-filter=terrabloque -i my_custom_module --stop-after-init"
+sudo docker exec -it odoo bash
+
+#try if doesnt work and everything seems fine
+sudo docker-compose down
+sudo docker-compose build --no-cache
+sudo docker-compose up -d
 
