@@ -15,7 +15,7 @@ services:
       - PASSWORD= ${POSTGRES_PASSWORD}
     volumes:
       - odoo-data:/var/lib/odoo  # Named volume for Odoo filestore
-      - odoo-config:/etc/odoo    # Named volume for Odoo configuration
+      - ./odoo-config/odoo.conf:/etc/odoo/odoo.conf    # Named file for Odoo configuration
       - odoo-custom-modules:/mnt/extra-addons  # Mount custom modules directory
     networks:
       - web
