@@ -20,6 +20,13 @@ services:
       - "traefik.http.routers.odoo.rule=Host(`terrabloque.com`)"
       - "traefik.http.routers.odoo.entrypoints=websecure"
       - "traefik.http.routers.odoo.tls.certresolver=letsencrypt"
+      #Configuración para pagos online
+      - "traefik.http.middlewares.odoo-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.odoo-headers.headers.customrequestheaders.X-Forwarded-For=$$remote_addr"
+      - "traefik.http.middlewares.odoo-headers.headers.customrequestheaders.X-Forwarded-Host=$$http_host"
+      
+      # Aplica el middleware a tu router de Odoo
+      - "traefik.http.routers.odoo.middlewares=odoo-headers"
 
   db:
     image: postgres:13
