@@ -17,17 +17,47 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.odoo.rule=Host(`terrabloque.com`)"
-      - "traefik.http.routers.odoo.entrypoints=websecure"
-      - "traefik.http.routers.odoo.tls.certresolver=letsencrypt"
-      #Configuración para pagos online
-      - "traefik.http.middlewares.odoo-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
-      - "traefik.http.middlewares.odoo-headers.headers.customrequestheaders.X-Forwarded-For=$$remote_addr"
-      - "traefik.http.middlewares.odoo-headers.headers.customrequestheaders.X-Forwarded-Host=$$http_host"
-      
-      # Aplica el middleware a tu router de Odoo
-      - "traefik.http.routers.odoo.middlewares=odoo-headers"
 
+  # --- Definición del Servicio de destino ---
+      - "traefik.http.services.odoo-service.loadbalancer.server.port=8069"
+
+  # --- Definición del Middleware 
+      - "traefik.http.middlewares.odoo-https-redirect.headers.customrequestheaders.X-Forwarded-Proto=https"
+
+  # --- Router para terrabloque.com ---
+      - "traefik.http.routers.odoo-terrabloque.rule=Host(`terrabloque.com`)"
+      - "traefik.http.routers.odoo-terrabloque.entrypoints=websecure"
+      - "traefik.http.routers.odoo-terrabloque.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.odoo-terrabloque.service=odoo-service" # <--- Le dice a dónde ir
+      - "traefik.http.routers.odoo-terrabloque.middlewares=odoo-https-redirect" # <--- Le aplica el middleware
+
+  # --- Router para madebloque.com ---
+      - "traefik.http.routers.odoo-madebloque.rule=Host(`madebloque.com`)"
+      - "traefik.http.routers.odoo-madebloque.entrypoints=websecure"
+      - "traefik.http.routers.odoo-madebloque.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.odoo-madebloque.service=odoo-service" # <--- Le dice a dónde ir
+      - "traefik.http.routers.odoo-madebloque.middlewares=odoo-https-redirect" 
+
+  # --- Router para supertirivita.terrabloque.com ---
+      - "traefik.http.routers.odoo-supertirivita.rule=Host(`supertirivita.terrabloque.com`)"
+      - "traefik.http.routers.odoo-supertirivita.entrypoints=websecure"
+      - "traefik.http.routers.odoo-supertirivita.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.odoo-supertirivita.service=odoo-service" 
+      - "traefik.http.routers.odoo-supertirivita.middlewares=odoo-https-redirect" 
+
+  # --- Router para tejibsa.com ---
+      - "traefik.http.routers.odoo-tejibsa.rule=Host(`tejibsa.com`)"
+      - "traefik.http.routers.odoo-tejibsa.entrypoints=websecure"
+      - "traefik.http.routers.odoo-tejibsa.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.odoo-tejibsa.service=odoo-service" 
+      - "traefik.http.routers.odoo-tejibsa.middlewares=odoo-https-redirect" 
+
+  # --- Router para albor.terrabloque.com ---
+      - "traefik.http.routers.odoo-albor.rule=Host(`albor.terrabloque.com`)"
+      - "traefik.http.routers.odoo-albor.entrypoints=websecure"
+      - "traefik.http.routers.odoo-albor.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.odoo-albor.service=odoo-service" 
+      - "traefik.http.routers.odoo-albor.middlewares=odoo-https-redirect" 
   db:
     image: postgres:13
     container_name: odoo-db
